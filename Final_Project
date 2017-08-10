@@ -1,0 +1,54 @@
+%% Task 0 - Loading data
+% The following 9 lines load the appropriate patient data. Only one line
+% should be active at a time 
+clear;
+clc;
+load('1_a41178.mat'); % Patient 1
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\2_a42126.mat'); % Patient 2
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\3_a40076.mat'); % Patient 3
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\4_a40050.mat'); % Patient 4
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\5_a41287.mat'); % Patient 5
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\6_a41846.mat'); % Patient 6
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\7_a41846.mat'); % Patient 7
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\8_a42008.mat'); % Patient 8
+% load('\\ad.uillinois.edu\engr\instructional\alvaro2\documents\ECE 313\Project3\Patient_Data\9_a41846.mat'); % Patient 9
+
+% We floor the data in order to estimate the probability distributions as
+% mass functions
+all_data_int = floor(all_data);
+
+% These two equations figure out the appropriate indices for the data set
+% to split it so that way 2/3's of the data is training, and 1/3 of the
+% data is testing. The training_idx is floored to ensure that even with
+% data sets that aren't divisible by 3, we can get something close
+training_idx = floor(length(all_data_int) * 2/3);
+testing_idx = length(all_labels);
+
+training = all_data_int(:, 1:training_idx);
+label_training = all_labels(1:training_idx);
+
+testing = all_data_int(:, training_idx:testing_idx);
+label_testing = all_labels(training_idx:testing_idx);
+
+fprintf('Training data represents %f of data\n', training_idx/testing_idx);
+fprintf('Testing data reprenets %f of data\n', (testing_idx - training_idx)/(testing_idx));
+%% Task 1 - The world of abnormalities
+tabulation = tabulate(label_training)
+T_0 = training;
+T_1 = training;
+T_0n = [];
+T_1n = [];
+L_0 = label_training;
+L_1 = label_training;
+P_H0 = tabulation(1,3)/100;
+P_H1 = tabulation(2,3)/100;
+
+for i = 1:length(label_training)
+    if(label_training(1,i) == 0)
+        T_0n(:,length(T_0n)+1) = T_0(:,i);
+    else
+        T_1n(:,length(T_1n)+1) = T_1(:,i);
+    end
+end    
+
+T_1(:,~any(isnan(T_1),2));
